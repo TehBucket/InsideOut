@@ -1,7 +1,7 @@
 body{
-background-color:#19302d;
--webkit-touch-callout: none;
--webkit-user-select: none;
+background-color:#0a1413;
+-webkit-touch-callout:none;
+-webkit-user-select:none;
 }
 
 #game{
@@ -9,7 +9,27 @@ border:4px solid #47716B;
 background-color:#b4fff5;
 }
 
-h1{
-color:white;
+#instructions{
+background-color:#0a1413;
+height:80px;
+width:1366px;
 margin:0 0;
+display:table-cell;
+vertical-align: middle;
+}
+
+#everything{
+margin:auto auto;
+width:1366px;
+height:900px;
+background-color:#19302d;
+border-bottom-left-radius:20px;
+border-bottom-right-radius:20px;
+}
+
+#text{
+color:#deffff;
+text-align:center;
+margin:0 0;
+font-family:arial;
 }

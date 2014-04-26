@@ -1,6 +1,9 @@
 // BENEATH THE SURFACE
+// LD 29
+// By Teh_Bucket
 
 var Canvas = document.getElementById('game');
+var out = document.getElementById('text');
 var game = Canvas.getContext('2d');
 var lag = 0; //for evening gameplay time at irregular framerates
 var lastFrame = new Date().getTime();
@@ -39,11 +42,11 @@ var drawCirc = function(circ){with(circ){
 var collide = function(obj1,xx,yy,xDir,yDir){with(obj1){
 	if(xx != null){
 		x = xx + xDir*(r+w/2);
-		xForce -= xForce*2;
+		xForce -= xForce*1.5;
 		}
 	if(yy != null){
 		y = yy + yDir*(r+w/2);
-		yForce -= yForce*2;
+		yForce -= yForce*1.5;
 	}
 }}
 
@@ -53,14 +56,24 @@ var addForce = function(obj,xF,yF){with(obj){
 }}
 
 var moveCirc = function(circ){with(circ){
-	y += yForce; //move first
-	x += xForce;
+	y += yForce*.9; //move first
+	x += xForce*.9;
 	(yForce == gravity) ? yForce = gravity : yForce += r/1000 * lag;
-	if(y + r + w/2 >= stage.bottom){collide(circ,null,stage.bottom,0,-1)} //colission with stage
+	//colission with stage
+	if(y + r + w/2 >= stage.bottom){collide(circ,null,stage.bottom,0,-1)}
 	if(y - r - w/2 <= stage.top){collide(circ,null,stage.top,0,1)}
 	if(x + r + w/2 >= stage.right){collide(circ,stage.right,null,-1,0)}
 	if(x - r - w/2 <= stage.left){collide(circ,stage.left,null,1,0)}
-
+	//Colission with balls
+	for(var i=0;i<circles.length;i++){
+		var distance = (Math.abs(x - circles[i].x)+Math.abs(y - circles[i].y))/2;
+		var sizes = r + w/2 + circles[i].r + circles[i].w/2;
+		if(out==circles[i].out && distance <= sizes && distance != 0){
+			var offx = Math.abs(x - circles[i].x);
+			var offy = Math.abs(y - circles[i].y);
+			console.log('collide',distance,sizes);
+		}
+	}
 }}
 
 var update = function(){
