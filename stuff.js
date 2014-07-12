@@ -1,5 +1,7 @@
 // BENEATH THE SURFACE
-// LD 29
+// Ludum Dare 29
+// Not really though
+// Basically just 2d sphere collission
 // By Teh_Bucket
 
 var Canvas = document.getElementById('game');
@@ -27,7 +29,7 @@ var newCircle = function(x,y,r){
 	this.colora = c.a;this.colorb = c.b;this.colorc = c.c; this.colord = c.d;
 }
 
-var colors = [{a:'#4C968C',b:'#FF700A',c:'#09E4C6',d:'#EFAA78'},{a:'#47716B',b:'#BF6F36',c:'#30AB9A',d:'#B38C71'},{a:'#196257',b:'#A64703',c:'039480',d:'#9B5727'},{a:'#80CBC0',b:'#FF9347',c:'#44F1DA',d:'#F7C29C'},{a:'#94CBC3',b:'#FFB078',c:'#72F1E0',d:'#F7D0B4'},];
+var colors = [{a:'#4C968C',b:'#FF700A',c:'#09E4C6',d:'#EFAA78'},{a:'#47716B',b:'#BF6F36',c:'#30AB9A',d:'#B38C71'},{a:'#196257',b:'#A64703',c:'#039480',d:'#9B5727'},{a:'#80CBC0',b:'#FF9347',c:'#44F1DA',d:'#F7C29C'},{a:'#94CBC3',b:'#FFB078',c:'#72F1E0',d:'#F7D0B4'},];
 
 var getDist = function(x,y,xx,yy){ //get dist between point x,y and point xx,yy (I'm actually using high school math in real life!)
 	return Math.sqrt( Math.pow((Math.abs(x - xx)),2) + Math.pow((Math.abs(y - yy)),2) );
@@ -78,18 +80,32 @@ var moveCirc = function(circ){with(circ){
 		if(out==circles[i].out && dist <= sizes && dist != 0){
 			var offx = x - circles[i].x;
 			var offy = y - circles[i].y;
+			var angle = getAngle(x,y,circles[i].x,circles[i].y);
+			var cx = r*Math.cos(angle); //contact point relevent to center
+			var cy = r*Math.sin(angle);
+			var cxx = circles[i].r*Math.cos(90-angle);
+			var cyy = circles[i].r*Math.sin(90-angle);
+			var closeness = sizes/dist;
 			var xDir = (offx>0) ? 1 : -1;
 			var yDir = (offy>0) ? 1 : -1;
 			var rS = r/circles[i].r; //ratio between radii, circ being on top
-			// yForce -= circles[i].yForce;
-			// xForce -= circles[i].xForce;
-			// circles[i].yForce -= yForce;
-			// circles[i].xForce -= xForce;
-			collide(circ, x,y, xDir, yDir,false);
-			collide(circles[i], circles[i].x,circles[i].y, -xDir, -yDir,false);
+			yForce -= circles[i].yForce / rS;
+			xForce -= circles[i].xForce / rS;
+			circles[i].yForce -= yForce*rS;
+			circles[i].xForce -= xForce*rS;
+			collide(circ, x,y, xDir*closeness, yDir*closeness,false);
+			// collide(circles[i], x+cx+cxx,y+cy+cyy, -xDir*closeness, -yDir*closeness,false);
+			collide(circles[i], circles[i].x, circles[i].y, -xDir*closeness, -yDir*closeness,false);
 
-
-			// console.log(x,y);
+			//debug
+			// game.beginPath;
+			// game.lineTo(x,y);
+			// game.lineTo(circles[i].x,circles[i].y);
+			// game.strokeStyle = 'black';
+			// game.stroke();
+			// lag = 0;
+			// eachFrame = clearTimeout(eachFrame);
+			// console.log(x,y,circles[i].x,circles[i].y,cx+cxx,cy+cyy);
 		}
 	}
 }}
@@ -132,7 +148,7 @@ window.addEventListener('mousemove', function(e){
 			else{
 				w = r/5;
 				out = !out;
-				addForce(circles[input.selected],(xx - x)/w, (yy -y)/w);
+				addForce(circles[input.selected],(xx - x)/(w/2), (yy -y)/(w/2));
 				input.selected = null;
 				input.click = false;
 			}
